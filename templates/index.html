@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VisionID · Face Recognition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">V<span>ID</span></div><div><b>VisionID</b><small>FACE INTELLIGENCE</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav-item active" data-view="overview"><span>▦</span> Overview</button>
+    <button class="nav-item" data-view="recognition"><span>◎</span> Live recognition</button>
+    <button class="nav-item" data-view="people"><span>♙</span> People registry</button>
+    <button class="nav-item" data-view="activity"><span>↗</span> Activity log</button>
+    <div class="sidebar-bottom">
+      <div class="status-dot"></div><div><b>Local system</b><small id="sideStatus">Checking backend…</small></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">COMPUTER VISION PLATFORM</div><h1 id="pageTitle">Overview</h1></div>
+      <div class="top-actions"><span class="local-pill"><i></i> LOCAL MODE</span><button class="avatar" title="VisionID">V</button></div>
+    </header>
+
+    <section class="view active" id="view-overview">
+      <div class="hero">
+        <div class="hero-copy"><div class="hero-kicker"><span class="spark">✦</span> REAL-TIME FACE INTELLIGENCE</div>
+          <h2>See who's<br><em>in the room.</em></h2>
+          <p>Detect faces, recognize registered people, and keep a timestamped activity trail — all processed locally on your machine.</p>
+          <button class="btn btn-light" data-go="recognition">Launch live recognition <span>↗</span></button>
+        </div>
+        <div class="hero-graphic" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="face-frame"><div class="face-head"></div><div class="face-shoulders"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div><span class="frame-tag">FACE DETECTED</span></div><div class="scan-line"></div><div class="graphic-caption">VISION ENGINE <b>● ACTIVE</b></div></div>
+      </div>
+      <div class="section-heading"><div><h3>System snapshot</h3><p>A quick view of your recognition workspace.</p></div><button class="btn btn-outline btn-sm" id="refreshBtn">↻ Refresh</button></div>
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon purple">♙</span><span class="stat-trend">REGISTRY</span></div><div class="stat-value" id="peopleCount">—</div><div class="stat-label">Registered people</div><div class="stat-foot">Enrolled identities</div></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon green">◎</span><span class="stat-trend">TODAY</span></div><div class="stat-value" id="todayCount">—</div><div class="stat-label">Recognized events today</div><div class="stat-foot">Timestamped matches</div></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon orange">↗</span><span class="stat-trend">HISTORY</span></div><div class="stat-value" id="eventCount">—</div><div class="stat-label">Total logged events</div><div class="stat-foot">Recognized and unknown</div></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon blue">⌘</span><span class="stat-trend">ENGINE</span></div><div class="stat-value status-value" id="modelStatus">—</div><div class="stat-label">Recognition model</div><div class="stat-foot" id="modelHint">Waiting for backend</div></article>
+      </div>
+      <div class="bottom-grid">
+        <article class="panel quick-panel"><div class="panel-heading"><div><h3>Quick actions</h3><p>Jump into your workflow.</p></div></div>
+          <button class="quick-action" data-go="recognition"><span class="quick-icon purple">◎</span><span><b>Start live recognition</b><small>Use your webcam to detect and identify faces</small></span><span class="arrow">↗</span></button>
+          <button class="quick-action" data-go="people"><span class="quick-icon green">＋</span><span><b>Register a person</b><small>Enroll face samples for future matching</small></span><span class="arrow">↗</span></button>
+          <button class="quick-action" data-go="activity"><span class="quick-icon orange">≡</span><span><b>Review activity</b><small>Inspect recent recognition events</small></span><span class="arrow">↗</span></button>
+        </article>
+        <article class="panel recent-panel"><div class="panel-heading"><div><h3>Recent activity</h3><p>Latest events from your local database.</p></div><button class="text-btn" data-go="activity">View all ↗</button></div><div id="recentEvents" class="recent-list"><div class="empty-state">Loading activity…</div></div></article>
+      </div>
+      <div class="privacy-note"><span>◇</span><div><b>Your data stays on this device</b><p>Face samples and logs are stored locally in the project's data folder. Only enroll people who have given their consent.</p></div></div>
+    </section>
+
+    <section class="view" id="view-recognition">
+      <div class="view-intro"><div><div class="eyebrow">LIVE CAMERA</div><h2>Recognition studio</h2><p>Start your camera to detect faces and identify enrolled people.</p></div><span class="live-chip"><i></i> READY TO SCAN</span></div>
+      <div class="studio-grid">
+        <article class="panel camera-panel"><div class="panel-heading"><div><h3>Camera feed</h3><p>Allow camera access when your browser asks.</p></div><span class="mini-label" id="cameraLabel">CAMERA OFF</span></div>
+          <div class="camera-stage" id="cameraStage"><video id="video" autoplay muted playsinline></video><canvas id="overlay"></canvas><div class="camera-placeholder" id="cameraPlaceholder"><div class="camera-symbol">◎</div><b>Your camera feed will appear here</b><span>Click Start camera to begin scanning.</span></div><div class="camera-corners"><i></i><i></i><i></i><i></i></div><div class="feed-badge" id="feedBadge">LIVE FEED</div></div>
+          <div class="camera-controls"><button class="btn btn-primary" id="startCamera">▶ Start camera</button><button class="btn btn-outline" id="stopCamera" disabled>■ Stop</button><span class="camera-help" id="cameraHelp">Camera is currently off.</span></div>
+        </article>
+        <article class="panel detections-panel"><div class="panel-heading"><div><h3>Detection results</h3><p>Latest processed frame.</p></div><span class="count-pill" id="faceCount">0 faces</span></div><div id="detectionResults" class="detection-results"><div class="empty-illustration">◎</div><b>Nothing detected yet</b><p>Start your camera to see detection results.</p></div><div class="engine-tip"><b>Recognition tip</b><p>Register each person with several clear samples under good lighting before testing identity matching.</p></div></article>
+      </div>
+      <div class="notice"><b>Prototype note:</b> LBPH confidence is a distance score, not a probability. The matching threshold needs testing with your own camera and lighting. This demo is not a security-grade identity verifier.</div>
+    </section>
+
+    <section class="view" id="view-people">
+      <div class="view-intro"><div><div class="eyebrow">IDENTITY MANAGEMENT</div><h2>People registry</h2><p>Enroll consenting participants and manage saved identities.</p></div><button class="btn btn-primary" id="openRegister">＋ Register person</button></div>
+      <div class="registry-layout">
+        <article class="panel registry-panel"><div class="panel-heading"><div><h3>Registered identities</h3><p id="registrySub">People enrolled in this local system.</p></div><button class="btn btn-outline btn-sm" id="trainBtn">↻ Retrain model</button></div><div id="peopleTable" class="table-wrap"><div class="empty-state">Loading registry…</div></div></article>
+        <article class="panel registration-card" id="registerCard"><div class="panel-heading"><div><h3>New registration</h3><p>Capture face samples using your camera.</p></div><button class="icon-button" id="closeRegister" aria-label="Close registration">×</button></div>
+          <label for="personName">Full name</label><input id="personName" maxlength="80" placeholder="e.g. Alex Morgan">
+          <div class="register-camera"><video id="registerVideo" autoplay muted playsinline></video><div class="register-camera-placeholder" id="registerPlaceholder">Camera preview</div><span id="sampleCount">0 / 5 samples</span></div>
+          <div class="sample-progress"><span id="sampleProgress"></span></div>
+          <div class="register-buttons"><button class="btn btn-outline" id="startRegisterCamera">Enable camera</button><button class="btn btn-primary" id="captureSample" disabled>Capture sample</button></div>
+          <div id="sampleThumbs" class="sample-thumbs"></div>
+          <button class="btn btn-primary btn-full" id="savePerson" disabled>Save person & train model</button>
+          <p class="form-hint">Capture 3–5 samples with small changes in angle or expression. The app saves face crops, not the full camera frame.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="view-activity">
+      <div class="view-intro"><div><div class="eyebrow">AUDIT TRAIL</div><h2>Activity log</h2><p>Review recent recognition events recorded by the backend.</p></div><button class="btn btn-outline" id="exportBtn">↓ Export CSV</button></div>
+      <article class="panel"><div class="panel-heading"><div><h3>Recognition events</h3><p>Entries are locally stored with timestamps.</p></div><button class="btn btn-outline btn-sm" id="refreshEvents">↻ Refresh</button></div><div id="eventsTable" class="table-wrap"><div class="empty-state">Loading events…</div></div></article>
+    </section>
+    <footer><span>VisionID · Student project prototype</span><span>Python · OpenCV · Flask · SQLite</span></footer>
+  </main>
+</div>
+<div id="toastArea" class="toast-area"></div>
+<div class="modal-backdrop" id="confirmBackdrop"><div class="modal"><div class="modal-mark">!</div><h3>Remove this person?</h3><p>This deletes their saved face samples and associated events from the local database.</p><div class="modal-actions"><button class="btn btn-outline" id="cancelDelete">Cancel</button><button class="btn btn-danger" id="confirmDelete">Delete person</button></div></div></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
